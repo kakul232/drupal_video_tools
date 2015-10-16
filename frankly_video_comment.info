@@ -1,0 +1,6 @@
+name = Frankly Video Comment
+description = embedded Video Comment
+core = 7.x
+
+dependencies[] = frankly_widget
+package=frankly
