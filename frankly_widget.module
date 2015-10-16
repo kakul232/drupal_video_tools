@@ -1,0 +1,141 @@
+<?php
+/**
+ * Implements hook_help().
+ */
+
+function frankly_widget_help($path, $arg) {
+  if ($path == 'admin/help#frankly_widget') {
+    return t('A demonstration frankly_widget.');
+  }
+}
+
+/********************************************* Config With Menu ************************************************/
+/**
+ * Implements hook_menu().
+ */
+function frankly_widget_menu() {
+  $items['admin/config/frankly_widget'] = array(
+    'title' => 'Welcome To Frankly configure',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('frankly_widget_form'),
+    'access arguments' => array('administer users'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+function frankly_widget_form($form, &$form_state) {
+  $form['frankly_username'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Frankly username'),
+    '#rows' => 5,
+    '#required' => TRUE,
+    '#default_value' => variable_get('frankly_username'),
+  );
+
+  $form['frankly_widget'] = array(
+    '#type' => 'select',
+    '#options'=>array('AB'=>'Ask Widget Button','HB'=>'Horizontal Badge','SB'=>'Sidereel Badge','AW'=>'Answer Widget'),
+    '#title' => t('Frankly Widget Type'),
+    '#rows' => 5,
+    '#required' => TRUE,
+    '#default_value' => variable_get('frankly_widget'),
+  );
+
+  $form['frankly_size'] = array(
+    '#type' => 'select',
+    '#options'=>array('S'=>'Small','M'=>'Medium','L'=>'Large'),
+    '#title' => t('Frankly Widget Size'),
+    '#rows' => 5,
+    '#required' => TRUE,
+    '#default_value' => variable_get('frankly_size'),
+  );
+
+  return system_settings_form($form);
+}
+
+
+/********************************************* BLOCK MODULE ************************************************/
+
+function frankly_widget_block_info() {
+
+  $blocks['frankly_block'] = array(
+    'info' => t('Frankly Widget'),
+    // DRUPAL_CACHE_PER_ROLE will be assumed.
+  );
+
+  return $blocks;
+}
+
+
+
+function frankly_widget_block_view($delta = '') {
+  // This example is adapted from node.module.
+  $block = array();
+
+  switch ($delta) {
+
+    case 'frankly_block':
+
+	 $frankly_username=variable_get('frankly_username');
+	 $frankly_widget=variable_get('frankly_widget');
+	 $frankly_w_style=variable_get('frankly_size');
+
+  $block['subject'] = t('Ask Me Any Thing');
+
+	// Askme
+if($frankly_widget=='AB'){
+	switch($frankly_w_style){
+		case 'S':	$block['content']= '<iframe frameborder="0" style="width: 80px; height: 40px;" src="https://frankly.me/widgets/askButtonLg/'.$frankly_username.'?flagRedirect=false&amp;url=http://embed.frankly.me/v2/"></iframe>';
+			break;
+		case 'M':	$block['content']= '<iframe frameborder="0" style="width: 120px; height: 40px; margin:auto;" src="https://frankly.me/widgets/askButtonLg/'.$frankly_username.'?flagRedirect=false&amp;url=http://embed.frankly.me/v2/"></iframe>';
+			break;
+		case 'L':	$block['content']= '<iframe frameborder="0" style="width: 300px; height: 40px; margin:auto;" src="https://frankly.me/widgets/askButtonLg/'.$frankly_username.'?flagRedirect=false&amp;url=http://embed.frankly.me/v2/"></iframe>';
+			break;
+}
+
+}
+// Hor Badge
+if($frankly_widget=='HB'){
+	switch($frankly_w_style){
+			case 'S':	$block['content']= '<iframe frameborder="0" style="width: 320px; height:  185px; margin:auto;" src="https://frankly.me/widgets/userWidgetLg/'.$frankly_username.'?flagRedirect=false&amp;url=http://embed.frankly.me/v2/"></iframe>';
+				break;
+			case 'L':	$block['content']= '<iframe frameborder="0" style="width: 450px; height:  290px; margin:auto;" src="https://frankly.me/widgets/userWidgetLg/'.$frankly_username.'?flagRedirect=false&amp;url=http://embed.frankly.me/v2/"></iframe>';
+				break;
+			default:	$block['content']= '<iframe frameborder="0" style="width: 300px; height: 40px; margin:auto;" src="https://frankly.me/widgets/userWidgetLg/'.$frankly_username.'?flagRedirect=false&amp;url=http://embed.frankly.me/v2/"></iframe>';
+				break;
+
+	}
+
+}
+// Side Badge
+if($frankly_widget=='SB'){
+	switch($frankly_w_style){
+				case 'S':	$block['content']= '<iframe frameborder="0" style="width: 230px; height:  450px; margin:auto;" src="https://frankly.me/widgets/userWidgetSm/'.$frankly_username.'?flagRedirect=false&amp;url=http://embed.frankly.me/v2/"></iframe>';
+					break;
+				case 'L':	$block['content']= '<iframe frameborder="0" style="width: 250px; height:  470px; margin:auto;" src="https://frankly.me/widgets/userWidgetSm/'.$frankly_username.'?flagRedirect=false&amp;url=http://embed.frankly.me/v2/"></iframe>';
+					break;
+				default:	$block['content']= '<iframe frameborder="0" style="width: 300px; height:  560px; margin:auto;" src="https://frankly.me/widgets/userWidgetSm/'.$frankly_username.'?flagRedirect=false&amp;url=http://embed.frankly.me/v2/"></iframe>';
+					break;
+
+		}
+}
+// Answer Widget
+if($frankly_widget=='AW'){
+	switch($frankly_w_style){
+
+					default:		$block['content']= '<iframe frameborder="0" style="width: 650px; height:  600px; margin:auto;" src="https://frankly.me/widgets/userWidgetBatch/'.$frankly_username.'?flagRedirect=false&amp;url=http://embed.frankly.me/v2/"></iframe>';
+						break;
+
+			}
+
+}
+// Question Widget
+if($frankly_widget='QW'){}
+
+
+
+      break;
+  }
+  return $block;
+}

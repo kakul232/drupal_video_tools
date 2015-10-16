@@ -1,0 +1,7 @@
+name = frankly
+description = embedded widget
+core = 7.x
+
+dependencies[] = frankly_video_comment
+configure = admin/config/frankly_widget
+package=frankly
